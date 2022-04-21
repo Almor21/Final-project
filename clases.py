@@ -7,21 +7,26 @@ class Gasto:
         self.Valor = Valor
         self.Descripcion = Descripcion
 
-    def getCantidad(self):
+    def getCantidad(self) -> float:
         return self.Valor
     
-    def getDescripcion(self):
+    def getDescripcion(self) -> str:
         return self.Descripcion
 
 class Registro:
-    def __init__(self, Descripcion: str):
-        self.Descripcion = Descripcion
+    def __init__(self):
         self.Registros: List[Gasto] = []
+
+    def __str__(self) -> str:
+        cad = "Los gastos guardados son:\n"
+        for gasto in self.Registros:
+            cad += "    - " + str(gasto.getDescripcion()) + " => " + str(gasto.getCantidad()) + "\n"
+        return cad
     
     def addGasto(self, gasto: Gasto):
         self.Registros.append(gasto)
 
-    def verRegistros(self):
+    def verRegistros(self) -> str:
         pass
 
 
@@ -44,13 +49,17 @@ class Categoria:
     def Ingreso(self, valor: float):
         self.Saldo += valor
 
+    def getRegGastos(self) -> Registro:
+        return self.regGastos
+
     def Retiro(self, gasto: Gasto):
-        valor = gasto.getCantidad
+        valor = gasto.getCantidad()
         if valor <= self.Saldo:
             self.Saldo -= valor
             self.regGastos.addGasto(gasto)
+            print(f"El gasto '{gasto.getDescripcion()}' se ha registrado correctamente.")
         else:
-            print("El saldo es insuficiente.")
+            print(f"El saldo para '{gasto.getDescripcion()}' es insuficiente.")
 
 class Horario:
     def __init__(self, Tipo: str, Fecha: Date, Cantidad: Gasto, Descripcion: str = None):
