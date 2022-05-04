@@ -1,12 +1,11 @@
+from traitlets.traitlets import Dict
 from sqlite3 import Date
 from typing import List
-from typing_extensions import Self
 
 class Gasto:
     def __init__(self, Valor: float, Descripcion: str = None):
         self.Valor = Valor
         self.Descripcion = Descripcion
-
     def getCantidad(self) -> float:
         return self.Valor
     
@@ -26,8 +25,9 @@ class Registro:
     def addGasto(self, gasto: Gasto):
         self.Registros.append(gasto)
 
-    def verRegistros(self) -> str:
-        pass
+    def verRegistros(self) -> None:
+        for gasto in self.Registros:
+          print(f"{gasto.getDescripcion()} => {gasto.getCantidad()}");
 
 
 class Categoria:
@@ -36,6 +36,15 @@ class Categoria:
         self.Descripcion = Descripcion
         self.Saldo = SaldoInc
         self.regGastos = Registro()
+
+    def __repr__(self) -> Dict:
+       r = {'Nombre': self.getNombre, 'Descripcion': self.getDescripcion(), 'SaldoActual': self.getSaldo()}
+       return r
+
+    def __str__(self) -> str:
+        cad = f"Nombre: {self.getNombre()}\n"
+        cad += f"Saldo Actual: {self.getSaldo()}\n"
+        return cad
 
     def getNombre(self) -> str:
         return self.Nombre
@@ -74,11 +83,22 @@ class Principal:
         self.lisCategorias: List[Categoria] = []
         self.regGastos = Registro()
 
-    def Ingreso(self, valor: float):
+    def Ingreso(self, valor: float, NomCat: str = None):
         self.DineroMes += valor
+        if NomCat != None:
+          self.getCategoria(NomCat).Ingreso(valor)
     
-    def Retiro(self, valor: float, descripcion: str):
-        if valor <= self.Saldo:
+    def Retiro(self, valor: float, descripcion: str, NomCat: str = None):
+        if NomCat != None:
+          cat = self.getCategoria(NomCat)
+
+          if cat.valor <= cat.Saldo:
+            cat.Saldo -= valor
+            nwGasto = Gasto(valor, descripcion)
+            cat.regGastos.addGasto(nwGasto)
+          else:
+            print("El saldo es insuficiente.")
+        elif valor <= self.Saldo:
             self.Saldo -= valor
             nwGasto = Gasto(valor, descripcion)
             self.regGastos.addGasto(nwGasto)
@@ -87,11 +107,20 @@ class Principal:
 
     def CrearCategoria(self, Nombre: str, Descripcion: str = None, SaldoInc: float = 0.0):
         nwCategoria = Categoria(Nombre, Descripcion, SaldoInc)
-        self.lisCategoria.append(nwCategoria)
+        self.lisCategorias.append(nwCategoria)
+
+    def getLisCategorias(self):
+        return self.lisCategorias
+
+    def getCategoria(self, nombre):
+      for cat in self.lisCategorias:
+          if cat.getNombre() == nombre:
+            return cat
+      return "Categoria no encontrada."
 
     def EliminarCategoria(self, Nombre: str):
         encontrado = False
-        for cat in self.lisCategoria:
+        for cat in self.lisCategorias:
             if cat.Nombre == Nombre:
                 self.lisCategorias.remove(cat)
                 encontrado = True
