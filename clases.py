@@ -50,7 +50,7 @@ class Categoria:
         return self.Nombre
 
     def getDescripcion(self) -> str:
-        return self.Descripcion
+        return self.Descripcion    
     
     def getSaldo(self) -> float:
         return self.Saldo
@@ -77,11 +77,21 @@ class Horario:
         self.Cantidad = Cantidad
         self.Descripcion = Descripcion
 
+    def getDate(self):
+        self.Fecha
+
+    def getAmount(self):
+        self.Cantidad    
+
+    def getType(self):
+        self.Tipo
+
 class Principal:
     def __init__(self):
         self.DineroMes = 0.0
         self.lisCategorias: List[Categoria] = []
         self.regGastos = Registro()
+        self.Calendar: List[Horario] = []
 
     def Ingreso(self, valor: float, NomCat: str = None):
         self.DineroMes += valor
@@ -108,6 +118,10 @@ class Principal:
     def CrearCategoria(self, Nombre: str, Descripcion: str = None, SaldoInc: float = 0.0):
         nwCategoria = Categoria(Nombre, Descripcion, SaldoInc)
         self.lisCategorias.append(nwCategoria)
+
+    def CrearHorario (self, Tipo: str, Fecha: Date, Cantidad: Gasto, Descripcion: str = None ):
+        nwHorario =  Horario(Tipo,Fecha,Cantidad,Descripcion)
+        self.calendar.append(nwHorario)
 
     def getLisCategorias(self):
         return self.lisCategorias
