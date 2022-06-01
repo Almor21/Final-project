@@ -1,43 +1,108 @@
 @startuml
+abstract class Transaccion{
+  getTipo()
+  getCantidad()
+  getdescripcion()
+  getFecha()
 
-class Principal{
-+ DineroMes: float
-...Metodos...
-+ Ingreso()
-+ Retiro()
-+ CrearCategoria()
-+ EliminarCategoria()
 }
 
-class Categoria {
-+ Nombre: str
-+ Descripcion: str
-+ Saldo: float
-...Metodos...
-+ Ingreso()
-+ Retiro()
+class Gasto {
+  Valor: float
+  Fecha: Date
+  Descripcion: str
+
+  getTipo()
+  getCantidad()
+  getdescripcion()
+  getFecha()
 }
 
-class Gasto{
-+ Valor: float
-+ Descripcion: str
+class Movimiento {
+  NomCat: str
+  Mod: str
+  Valor: float
+  Fecha: Date
+  Descripcion: str
+
+  getTipo()
+  getMod()
+  getCantidad()
+  getNomCat()
+  getdescripcion()
+  getFecha()
 }
 
-class Horarios{
-+ Tipo:str
-+ Descripcion: str
-+ Fecha:Date
-+ Cantidad: Float
+
+
+class Ingreso {
+  Valor: float
+  Fecha: Date
+  Descripcion: str
+
+  getTipo()
+  getCantidad()
+  getdescripcion()
+  getFecha()
+}
+
+class GHormiga {
+  Valor: float
+  Fecha: Date
+  Descripcion: str
+
+  getCantidad()
+  getdescripcion()
+  getFecha()
 }
 
 class Registro {
-+ addGasto()
-+ VisualizarRegistro()
+  Registros: List[Transaccion]
+ 
+
+  addTransaccion()
+  getRegistros()
 }
 
-Principal "1" --- "0...*" Categoria
-Principal "1" --- "0...*" Horarios
-Horarios "1" --- "0...*" Gasto
-Principal "1" --- "1" Registro
-Categoria "1" --- "1" Registro
+class Categoria {
+  parent
+  Nombre: str
+  Descripcion: str
+  Saldo: float
+
+  nwIngreso()
+  nwGasto()
+  getRegistro()
+  
+
+}
+
+class Principal {
+  listCategorias: List[Categoria]
+  listGHormiga: List[GHormiga]
+  Libre : float
+  
+
+  nwIngreso()
+  nwGasto()
+  nwMovimiento()
+  CrearCategoria()
+  EliminarCategoria()
+  getListCategorias()
+  getCategoria()
+  getRegistros()
+  nwGHormiga()
+  getGHormigas()
+}
+
+Transaccion <|-- Gasto
+Transaccion <|-- Ingreso
+Transaccion <|-- Movimiento
+
+Registro "1" -- "0..*"Transaccion
+Categoria "1" o-- "regCategoria" Registro
+Principal "1" -- "0..*" GHormiga
+Principal "1" -- "0..*" Categoria
+Principal "1" o-- "regPrincipal" Registro
+
 @enduml
